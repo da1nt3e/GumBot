@@ -1,0 +1,25 @@
+@bot.tree.command(name="banish", description="Give a user the Banished role")
+@app_commands.describe(user="The user to banish")
+async def banish(interaction: discord.Interaction, user: discord.Member):
+
+    if not interaction.user.guild_permissions.manage_roles:
+        await interaction.response.send_message(
+            "❌ You don't have permission to use this command.",
+            ephemeral=True
+        )
+        return
+
+    role = discord.utils.get(interaction.guild.roles, name="Banished")
+
+    if role is None:
+        await interaction.response.send_message(
+            "❌ The Banished role doesn't exist.",
+            ephemeral=True
+        )
+        return
+
+    await user.add_roles(role)
+
+    await interaction.response.send_message(
+        f"✅ {user.mention} has been banished."
+    )
