@@ -2,7 +2,7 @@ import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
 export default {
     data: new SlashCommandBuilder()
-        .setName("Dungeon")
+        .setName("dungeon")
         .setDescription("Give a user the Dungeon role")
         .addUserOption(option =>
             option
