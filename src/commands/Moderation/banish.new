@@ -1,0 +1,53 @@
+import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
+import { successEmbed } from '../../utils/embeds.js';
+import { InteractionHelper } from '../../utils/interactionHelper.js';
+
+export default {
+    data: new SlashCommandBuilder()
+        .setName("banish")
+        .setDescription("Give a user the Banished role")
+        .addUserOption((option) =>
+            option
+                .setName("target")
+                .setDescription("The user to banish")
+                .setRequired(true),
+        )
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
+
+    category: "moderation",
+
+    async execute(interaction) {
+        const user = interaction.options.getMember("target");
+
+        if (!user) {
+            await InteractionHelper.universalReply(interaction, {
+                content: "❌ You must specify a user.",
+                ephemeral: true,
+            });
+            return;
+        }
+
+        const role = interaction.guild.roles.cache.find(
+            (r) => r.name === "Banished"
+        );
+
+        if (!role) {
+            await InteractionHelper.universalReply(interaction, {
+                content: "❌ The Banished role does not exist.",
+                ephemeral: true,
+            });
+            return;
+        }
+
+        await user.roles.add(role);
+
+        await InteractionHelper.universalReply(interaction, {
+            embeds: [
+                successEmbed(
+                    `⛓️ **Banished** ${user.user.tag}`,
+                    `**Role given:** ${role.name}`,
+                ),
+            ],
+        });
+    },
+};
