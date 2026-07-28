@@ -2,12 +2,12 @@ import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
 export default {
     data: new SlashCommandBuilder()
-        .setName("banish")
-        .setDescription("Give a user the Banished role")
+        .setName("Dungeon")
+        .setDescription("Give a user the Dungeon role")
         .addUserOption(option =>
             option
                 .setName("user")
-                .setDescription("The user to banish")
+                .setDescription("The user to Dungeon")
                 .setRequired(true)
         )
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
@@ -18,12 +18,12 @@ export default {
         const member = interaction.options.getMember("user");
 
         const role = interaction.guild.roles.cache.find(
-            role => role.name === "Banished"
+            role => role.name === "Dungeon"
         );
 
         if (!role) {
             return interaction.reply({
-                content: "❌ The Banished role does not exist.",
+                content: "❌ The Dungeon role does not exist.",
                 ephemeral: true
             });
         }
@@ -31,7 +31,7 @@ export default {
         await member.roles.add(role);
 
         await interaction.reply({
-            content: `✅ ${member.user.username} has been banished.`
+            content: `✅ ${member.user.username} has been sent to the dungeon.`
         });
     },
 };
