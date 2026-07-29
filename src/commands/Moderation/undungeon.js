@@ -3,7 +3,7 @@ import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 export default {
     data: new SlashCommandBuilder()
         .setName("undungeon")
-        .setDescription("Remove the Dungeon role from a user")
+        .setDescription("Free a user from the Dungeon")
         .addUserOption(option =>
             option
                 .setName("user")
@@ -17,18 +17,23 @@ export default {
     async execute(interaction) {
         const member = interaction.options.getMember("user");
 
-        const role = interaction.guild.roles.cache.find(
+        const dungeonRole = interaction.guild.roles.cache.find(
             role => role.name === "Dungeon"
         );
 
-        if (!role) {
+        const verifiedRole = interaction.guild.roles.cache.find(
+            role => role.name === "Verified"
+        );
+
+        if (!dungeonRole || !verifiedRole) {
             return interaction.reply({
-                content: "❌ The Dungeon role does not exist.",
+                content: "❌ The Dungeon or Verified role does not exist.",
                 ephemeral: true
             });
         }
 
-        await member.roles.remove(role);
+        await member.roles.remove(dungeonRole);
+        await member.roles.add(verifiedRole);
 
         await interaction.reply({
             content: `✅ ${member.user.username} has been freed from the Dungeon.`
